@@ -1,0 +1,11 @@
+body {
+    /* 设置距离屏幕的边距 */
+    margin: 0;
+    padding: 0;
+    /* 隐藏溢出，清除浮动 */
+    overflow: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}

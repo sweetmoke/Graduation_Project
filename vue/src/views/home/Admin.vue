@@ -19,19 +19,19 @@
       </div>
 
       <!-- 管理员界面 -->
-      <el-table :data="tableData" style="width: 100%" stripe :cell-style="{ textAlign: 'center' }"
+      <el-table :data="tableData" style="width: 100%" fit="true" stripe :cell-style="{ textAlign: 'center' }"
         :header-cell-style="{ textAlign: 'center' }">
-        <el-table-column fixed prop="date" label="日期">
+        <el-table-column fixed prop="id" label="ID">
         </el-table-column>
-        <el-table-column prop="name" label="姓名">
+        <el-table-column prop="userName" label="姓名">
         </el-table-column>
-        <el-table-column prop="province" label="省份">
+        <el-table-column prop="password" label="密码">
         </el-table-column>
-        <el-table-column prop="city" label="市区">
+        <el-table-column prop="age" label="年龄">
         </el-table-column>
-        <el-table-column prop="address" label="地址">
+        <el-table-column prop="gender" label="性别">
         </el-table-column>
-        <el-table-column prop="zip" label="邮编">
+        <el-table-column prop="phone" label="电话">
         </el-table-column>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
@@ -57,6 +57,9 @@
 import request from "@/utils/request";
 
 export default {
+  created() {
+    this.load()
+  },
   methods: {
     handleClick(row) {
       console.log(row);
@@ -66,62 +69,24 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+    },
+    load(){
+      request.get("admin/alldata").then(res =>{
+        if (res.code === '0'){
+          //从后端调取管理员alldata
+          this.tableData = res.data;
+        }else{
+          //不成功返回错误信息
+          this.$notify.error(res.msg)
+        }
+      })
     }
   },
   data() {
     return {
       input: '',
-      currentPage1: 1,
-      tableData: [{
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-08',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-06',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-07',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }]
+      currentPage: 1,
+      tableData: []
     }
   }
 }

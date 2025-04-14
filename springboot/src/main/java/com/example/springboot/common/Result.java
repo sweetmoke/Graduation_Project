@@ -4,7 +4,7 @@ public class Result {
     //    静态属性
     private static final String SUCCESS = "0";
 
-    private static final String ERROR = "1";
+    private static final String ERROR = "-1";
 
     //    类的属性
     private String code;

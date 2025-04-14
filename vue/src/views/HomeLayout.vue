@@ -6,7 +6,7 @@
             <el-header style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="home_header" style="display: flex; align-items: center;">
                     <img src="@/assets/logo.png" style="height: 50px; margin-right: 15px;">
-                    <strong style="font-size: 1.2em;">中小学生安全科普平台</strong>
+                    <strong style="font-size: 1.2em;">中小学生安全知识智能问答系统</strong>
                 </div>
                 <span style="font-size: 0.9em; font-style: italic;">
                     安全是生命的基石，守护是成长的护航。

@@ -1,3 +1,26 @@
-# ?????
+# 端口号配置
 server:
   port: 9090
+
+# 数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root  # 数据库用户名
+    password: 123456  # 数据库密码
+    url: jdbc:mysql://localhost:3306/studentsystem?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+
+  main:
+    allow-circular-references: true
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+# 配置 MyBatis 实体和 XML 映射
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.springboot.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -13,11 +13,18 @@
                 </span>
             </el-header>
             <!-- 导航栏 -->
-            <el-menu :default-active="$route.path" router class="el-menu-demo" mode="horizontal"
-                background-color="#daf5f3" text-color="#333" active-text-color="#009688"
+            <el-menu 
+                :default-active="$route.path" 
+                router 
+                class="el-menu-demo" 
+                mode="horizontal"
+                background-color="#daf5f3" 
+                text-color="#333" 
+                active-text-color="#009688"
                 style="margin: 0px 0px 3px 0px">
                 <!--              @select="handleSelect"-->
 
+                <!-- 左侧菜单栏 -->
                 <el-menu-item index="/home/homepage" style="transition: all 0.3s;" class="nav-item">首页</el-menu-item>
                 <el-menu-item index="/home/chat" style="transition: all 0.3s;" class="nav-item">安全小导师</el-menu-item>
                 <el-menu-item index="/home/test" style="transition: all 0.3s;" class="nav-item">
@@ -50,8 +57,18 @@
 <el-menu-item index="/news">新闻</el-menu-item>
 <el-menu-item index="/policy">政策法规</el-menu-item>
 <el-menu-item index="/interaction">交流互动</el-menu-item> -->
+
+
+
+                <!-- 右侧菜单栏 -->
                 <div style="display: flex;float: right">
-                    <el-menu-item index="/home/admin" style="transition: all 0.3s;" class="nav-item">管理员</el-menu-item>
+                    <el-submenu index="1">
+                        <template slot="title">账户管理</template>
+                        <el-menu-item index="/home/admin" style="transition: all 0.3s;" class="nav-item">管理员管理</el-menu-item>
+                        <el-menu-item index="/home/user" style="transition: all 0.3s;" class="nav-item">用户管理</el-menu-item>
+                    </el-submenu>
+
+
                     <!-- v-if="userRole === 'admin'" -->
                     <el-menu-item index="/home/information"
                         style="display: flex;align-items: center;justify-content: center;transition: all 0.3s;"
@@ -64,6 +81,7 @@
                         <i class="el-icon-user"></i>用户中心
                     </el-menu-item>
                 </div>
+
             </el-menu>
             <el-main>
                 <router-view />
@@ -127,3 +145,5 @@ body>.el-container {
     transform: scale(0.98);
 }
 </style>
+<script lang="ts">
+</script>

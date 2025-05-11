@@ -35,6 +35,11 @@ const routes = [
         
             },
             {
+                path: 'user',
+                component: () => import(/* webpackChunkName: "about" */ '../views/home/User.vue'),
+
+            },
+            {
                 path: 'user-center',
                 component: () => import('../views/home/UserCenter.vue'),
         
@@ -42,12 +47,21 @@ const routes = [
         ]
 
     },
-    
+    {
+        path: '/register',
+        name: 'register',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue'),
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue'),
+    },
     // {
     //     path: '/knowledge',
     //     name: 'knowledge',
     //     component: () => import(/* webpackChunkName: "about" */ '../views/manager/AboutView.vue'),
-    //     chlidren: [
+    //     children: [
     //         {path: 'about', component: () => import('../views/manager/AboutView.vue')},
     //     ]
     // }

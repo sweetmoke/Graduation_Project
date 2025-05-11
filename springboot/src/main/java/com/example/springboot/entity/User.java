@@ -2,8 +2,8 @@ package com.example.springboot.entity;
 
 import javax.persistence.*;
 
-@Table(name = "admin")
-public class Admin {
+@Table(name = "user")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

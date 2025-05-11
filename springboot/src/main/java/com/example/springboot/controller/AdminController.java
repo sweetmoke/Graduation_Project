@@ -23,9 +23,10 @@ public class AdminController {
     @GetMapping("/alldata")
     public Result getData(){
         List<Admin> all = adminService.getAll();
-        if(all.size() < 1){
-            throw new CustomException(ResultCode.DATA_LESS);
-        }
+//        报错，当管理员数据小于1
+//        if(all.size() < 1){
+//            throw new CustomException(ResultCode.DATA_LESS);
+//        }
 
         return Result.success(adminService.getAll());
 

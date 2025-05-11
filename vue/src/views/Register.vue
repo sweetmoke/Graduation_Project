@@ -71,7 +71,7 @@ export default {
     Register() {
       this.$refs.registerFormRef.validate(valid => {
         if (valid) {
-          request.post("user/register", this.registerForm).then(res => {
+          request.post("account/register", this.registerForm).then(res => {
             if (res.code === '0') {
               this.$message.success("注册成功");
               this.$router.push("/home/homepage");

@@ -30,10 +30,10 @@ public class AdminController {
     }
 
     //管理员登录接口
-    @PostMapping("/login")
-    public Result adminLogin(@RequestBody Admin admin){
-
-        return Result.success(adminService.adminLogin(admin));
-    }
+//    @PostMapping("/login")
+//    public Result adminLogin(@RequestBody Admin admin){
+//
+//        return Result.success(adminService.adminLogin(admin));
+//    }
 
 }

@@ -55,30 +55,41 @@ export default {
     Login() {
       this.$refs.loginFormRef.validate(valid => {
         if (valid) {
+          //走父类account的登录接口
+            request.post("/account/login", this.loginForm).then(res=>{
+              if (res.code === '0'){
+                this.$message.success('登录成功');
+                this.$router.push("/home/homepage")
+                // 登录逻辑
+              } else {
+                this.$message.error(res.msg);
+              }
+            })
+
           //管理员登录
-          if (this.loginForm.role === '1'){
-            request.post("/admin/login", this.loginForm).then(res=>{
-              if (res.code === '0'){
-                this.$message.success('登录成功');
-                this.$router.push("/home/homepage")
-                // 登录逻辑
-              } else {
-                this.$message.error(res.msg);
-              }
-            })
-          }
+          // if (this.loginForm.role === '1'){
+          //   request.post("/admin/login", this.loginForm).then(res=>{
+          //     if (res.code === '0'){
+          //       this.$message.success('登录成功');
+          //       this.$router.push("/home/homepage")
+          //       // 登录逻辑
+          //     } else {
+          //       this.$message.error(res.msg);
+          //     }
+          //   })
+          // }
           //用户登录
-          if (this.loginForm.role === '2'){
-            request.post("/user/login", this.loginForm).then(res=>{
-              if (res.code === '0'){
-                this.$message.success('登录成功');
-                this.$router.push("/home/homepage")
-                // 登录逻辑
-              } else {
-                this.$message.error(res.msg);
-              }
-            })
-          }
+          // if (this.loginForm.role === '2'){
+          //   request.post("/user/login", this.loginForm).then(res=>{
+          //     if (res.code === '0'){
+          //       this.$message.success('登录成功');
+          //       this.$router.push("/home/homepage")
+          //       // 登录逻辑
+          //     } else {
+          //       this.$message.error(res.msg);
+          //     }
+          //   })
+          // }
 
 
         }

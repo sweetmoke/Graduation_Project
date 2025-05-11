@@ -26,20 +26,20 @@ public class UserController {
 
     }
 
-    //用户注册接口
-    @PostMapping("/register")
-    public Result userRegister(@RequestBody User user){
-        userService.userRegister(user);
-
-        return Result.success(user);
-    }
+//    //用户注册接口
+//    @PostMapping("/register")
+//    public Result userRegister(@RequestBody User user){
+//        userService.userRegister(user);
+//
+//        return Result.success(user);
+//    }
 
     //用户登录接口
-    @PostMapping("/login")
-    public Result userLogin(@RequestBody User user){
-
-        return Result.success(userService.userLogin(user));
-    }
+//    @PostMapping("/login")
+//    public Result userLogin(@RequestBody User user){
+//
+//        return Result.success(userService.userLogin(user));
+//    }
 
 }
 

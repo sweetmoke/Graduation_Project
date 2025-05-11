@@ -9,13 +9,14 @@
         <!-- 身份选择 -->
         <el-form-item label="身份" prop="role">
           <el-select v-model="loginForm.role" placeholder="请选择身份" class="full-width">
-            <el-option label="管理员" value="admin" />
-            <el-option label="用户" value="user" />
+            <el-option label="管理员" value="1" />
+            <el-option label="用户" value="2" />
+<!--            <el-option label="老师" value="3" />-->
           </el-select>
         </el-form-item>
 
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="loginForm.username" placeholder="请输入用户名" />
+        <el-form-item label="用户名" prop="userName">
+          <el-input v-model="loginForm.userName" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="loginForm.password" type="password" placeholder="请输入密码" show-password/>
@@ -40,12 +41,12 @@ export default {
     return {
       loginForm: {
         role: '',
-        username: '',
+        userName: '',
         password: ''
       },
       rules: {
         role: [{ required: true, message: '请选择身份', trigger: 'change' }],
-        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       }
     };
@@ -54,10 +55,32 @@ export default {
     Login() {
       this.$refs.loginFormRef.validate(valid => {
         if (valid) {
-          this.$message.success('登录成功');
-          // 登录逻辑
-        } else {
-          this.$message.error('请完善信息');
+          //管理员登录
+          if (this.loginForm.role === '1'){
+            request.post("/admin/login", this.loginForm).then(res=>{
+              if (res.code === '0'){
+                this.$message.success('登录成功');
+                this.$router.push("/home/homepage")
+                // 登录逻辑
+              } else {
+                this.$message.error(res.msg);
+              }
+            })
+          }
+          //用户登录
+          if (this.loginForm.role === '2'){
+            request.post("/user/login", this.loginForm).then(res=>{
+              if (res.code === '0'){
+                this.$message.success('登录成功');
+                this.$router.push("/home/homepage")
+                // 登录逻辑
+              } else {
+                this.$message.error(res.msg);
+              }
+            })
+          }
+
+
         }
       });
     }

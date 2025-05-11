@@ -6,10 +6,7 @@ import com.example.springboot.entity.Admin;
 import com.example.springboot.exception.CustomException;
 import com.example.springboot.service.AdminService;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,4 +28,12 @@ public class AdminController {
         return Result.success(adminService.getAll());
 
     }
+
+    //管理员登录接口
+    @PostMapping("/login")
+    public Result adminLogin(@RequestBody Admin admin){
+
+        return Result.success(adminService.adminLogin(admin));
+    }
+
 }

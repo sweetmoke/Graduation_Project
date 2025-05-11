@@ -34,6 +34,13 @@ public class UserController {
         return Result.success(user);
     }
 
+    //用户登录接口
+    @PostMapping("/login")
+    public Result userLogin(@RequestBody User user){
+
+        return Result.success(userService.userLogin(user));
+    }
+
 }
 
 

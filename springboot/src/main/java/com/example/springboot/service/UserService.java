@@ -35,4 +35,24 @@ public class UserService {
 
         return user;
     }
+
+    public Object userLogin(User user) {
+        //1.拿到用户名到数据库根据用户名匹配
+        User dbUser = userDao.findByName(user.getUserName());
+        if (ObjectUtil.isEmpty(dbUser)) {
+            throw new CustomException(ResultCode.USER_NOT_EXIST_ERROR);
+        }
+
+        //2.如果用户存在，再对比用户输入的密码和数据库存的密码是否一致，如一致则允许登录
+        String password = user.getPassword();//用户输入的密码
+        String dbPassword = dbUser.getPassword();//数据路找到用户的密码
+
+        if (!password.equals(dbPassword)) {
+            throw new CustomException(ResultCode.USER_ACCOUNT_ERROR);//报错账户或密码错误
+
+        }
+
+        return dbUser;
+
+    }
 }

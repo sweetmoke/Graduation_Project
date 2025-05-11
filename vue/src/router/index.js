@@ -4,59 +4,21 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
-    {
-        path: '/home',
-        name: 'home',
-        component: () => import(/* webpackChunkName: "about" */ '../views/HomeLayout.vue'),
+    {path: '/home', name: 'home', component: () => import(/* webpackChunkName: "about" */ '../views/HomeLayout.vue'),
         children: [
-            {
-                path: 'homepage',
-                component: () => import('../views/home/HomePage.vue'),
-        
-            },
-            {
-                path: 'chat',
-                component: () => import('../views/home/Chat.vue'),
-        
-            },
-            {
-                path: 'test',
-                component: () => import('../views/home/Test.vue'),
-        
-            },
-            {
-                path: 'information',
-                component: () => import('../views/home/Information.vue'),
-        
-            },
-            {
-                path: 'admin',
-                component: () => import(/* webpackChunkName: "about" */ '../views/home/Admin.vue'),
-        
-            },
-            {
-                path: 'user',
-                component: () => import(/* webpackChunkName: "about" */ '../views/home/User.vue'),
-
-            },
-            {
-                path: 'user-center',
-                component: () => import('../views/home/UserCenter.vue'),
-        
-            },
+            {path: 'homepage', component: () => import('../views/home/HomePage.vue'),},
+            {path: 'chat', component: () => import('../views/home/Chat.vue'),},
+            {path: 'test', component: () => import('../views/home/Test.vue'),},
+            {path: 'information', component: () => import('../views/home/Information.vue'),},
+            {path: 'admin', component: () => import(/* webpackChunkName: "about" */ '../views/home/Admin.vue'),},
+            {path: 'user', component: () => import(/* webpackChunkName: "about" */ '../views/home/User.vue'),},
+            {path: 'user-center', component: () => import('../views/home/UserCenter.vue'),},
         ]
 
     },
-    {
-        path: '/register',
-        name: 'register',
-        component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue'),
-    },
-    {
-        path: '/login',
-        name: 'login',
-        component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue'),
-    },
+    {path: '/register', name: 'register', component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue'),},
+    {path: '/login', name: 'login', component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue'),},
+
     // {
     //     path: '/knowledge',
     //     name: 'knowledge',

@@ -59,6 +59,16 @@ export default {
             request.post("/account/login", this.loginForm).then(res=>{
               if (res.code === '0'){
                 this.$message.success('登录成功');
+                //获取后端传来的token和user对象
+                let token = res.data.token;
+                let user = res.data.user;
+                // console.log(res.data.token)
+
+                //拿到之后，存到前端缓存里
+                localStorage.setItem("token",token)
+                localStorage.setItem("user",JSON.stringify(user))
+                // localStorage.getItem("")
+
                 this.$router.push("/home/homepage")
                 // 登录逻辑
               } else {

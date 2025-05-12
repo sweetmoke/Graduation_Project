@@ -35,4 +35,29 @@ const router = new VueRouter({
     routes
 })
 
+
+// 解决 VueRouter push 重复导航报错的问题
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err);
+};
+
+// 路由守卫
+router.beforeEach((to, from, next) => {
+    if (to.path === "/") {
+        return next("/login");
+    }
+
+    let user = localStorage.getItem("user");
+
+    // 如果未登录，且访问的不是登录或注册页面
+    if (!user && to.path !== "/login" && to.path !== "/register" && to.path !== "/home/homepage") {
+        return next("/login");
+    }
+
+    // 否则放行
+    next();
+});
+
+
 export default router

@@ -13,14 +13,8 @@
                 </span>
             </el-header>
             <!-- 导航栏 -->
-            <el-menu 
-                :default-active="$route.path" 
-                router 
-                class="el-menu-demo" 
-                mode="horizontal"
-                background-color="#daf5f3" 
-                text-color="#333" 
-                active-text-color="#009688"
+            <el-menu :default-active="$route.path" router class="el-menu-demo" mode="horizontal"
+                background-color="#daf5f3" text-color="#333" active-text-color="#009688"
                 style="margin: 0px 0px 3px 0px">
                 <!--              @select="handleSelect"-->
 
@@ -63,9 +57,12 @@
                 <!-- 右侧菜单栏 -->
                 <div style="display: flex;float: right">
                     <el-submenu index="1">
-                        <template slot="title">账户管理</template>
-                        <el-menu-item index="/home/admin" style="transition: all 0.3s;" class="nav-item">管理员管理</el-menu-item>
-                        <el-menu-item index="/home/user" style="transition: all 0.3s;" class="nav-item">用户管理</el-menu-item>
+                        <template slot="title">账户管理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</template>
+
+                        <el-menu-item index="/home/admin" style="transition: all 0.3s;"
+                            class="nav-item">管理员管理</el-menu-item>
+                        <el-menu-item index="/home/user" style="transition: all 0.3s;"
+                            class="nav-item">用户管理</el-menu-item>
                     </el-submenu>
 
 
@@ -75,11 +72,35 @@
                         class="nav-item">
                         <i class="el-icon-bell"></i>通知
                     </el-menu-item>
-                    <el-menu-item index="/home/user-center"
-                        style="display: flex;align-items: center;justify-content: center;transition: all 0.3s;"
-                        class="nav-item">
-                        <i class="el-icon-user"></i>用户中心
-                    </el-menu-item>
+
+
+                    <el-submenu index="/home/user-center" class="nav-item"
+                        style="display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+                        <template slot="title">
+                            <i class="el-icon-user" style="margin-right: 5px;"></i>
+                            {{ user.userName }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </template>
+                        <el-menu-item index="/home/user-center" class="nav-item"
+                            style="transition: all 0.3s;">个人中心</el-menu-item>
+                        <el-menu-item @click.native="logout" class="nav-item"
+                            style="transition: all 0.3s;">退出登录</el-menu-item>
+                    </el-submenu>
+
+                    <!-- <el-menu-item index="/home/user-center" class="nav-item" style="transition: all 0.3s;">
+                        <el-dropdown trigger="click">
+                            <span class="el-dropdown-link" style="display: flex; align-items: center; cursor: pointer;">
+                                <i class="el-icon-user" style="margin-right: 5px;"></i>{{ user.userName }}
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item
+                                    @click.native="$router.push('/home/user-center')">个人中心</el-dropdown-item>
+                                <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </el-menu-item> -->
+
+
+
                 </div>
 
             </el-menu>
@@ -89,6 +110,31 @@
         </el-container>
     </div>
 </template>
+
+<script>
+import request from "@/utils/request";
+
+export default {
+    name: "HomeLayout",
+    data() {
+        return {
+            // 定义 User 对象，从缓存中取值
+            user: JSON.parse(localStorage.getItem("user") || "{}"),
+        };
+    },
+    methods: {
+        // 退出登录方法
+        logout() {
+            console.log("logout");
+            //主动清楚缓存
+            localStorage.removeItem("user");
+            //退出至登录界面
+            this.$router.push("/login");
+        }
+    }
+};
+</script>
+
 
 <style>
 .el-header,
@@ -145,5 +191,3 @@ body>.el-container {
     transform: scale(0.98);
 }
 </style>
-<script lang="ts">
-</script>

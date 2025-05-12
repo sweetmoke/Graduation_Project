@@ -3,6 +3,7 @@ package com.example.springboot.service;
 import cn.hutool.core.util.ObjectUtil;
 import com.example.springboot.common.ResultCode;
 import com.example.springboot.dao.AdminDao;
+import com.example.springboot.entity.Account;
 import com.example.springboot.entity.Admin;
 import com.example.springboot.entity.User;
 import com.example.springboot.exception.CustomException;
@@ -21,7 +22,7 @@ public class AdminService {
         return adminDao.selectAll();
     }
 
-    public Object adminLogin(Admin admin) {
+    public Admin adminLogin(Admin admin) {
         //1.拿到用户名到数据库根据用户名匹配
         Admin dbAdmin = adminDao.findByName(admin.getUserName());
         if (ObjectUtil.isEmpty(dbAdmin)) {
@@ -39,5 +40,9 @@ public class AdminService {
 
         return dbAdmin;
 
+    }
+
+    public Admin findById(Integer id) {
+        return adminDao.findById(id);
     }
 }

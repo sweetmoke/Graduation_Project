@@ -12,4 +12,7 @@ public interface UserDao extends Mapper<User> {
     //数据库中如果有与用户输入的名字重复的，返回名字
     @Select("select * from user where `userName` = #{userName}")
     User findByName(@Param("userName") String userName);
+
+    @Select("select * from user where `id` = #{id}")
+    User findById(@Param("id")Integer id);
 }

@@ -3,6 +3,7 @@ package com.example.springboot.service;
 import cn.hutool.core.util.ObjectUtil;
 import com.example.springboot.common.ResultCode;
 import com.example.springboot.dao.UserDao;
+import com.example.springboot.entity.Account;
 import com.example.springboot.entity.User;
 import com.example.springboot.exception.CustomException;
 import jakarta.annotation.Resource;
@@ -36,7 +37,7 @@ public class UserService {
         return user;
     }
 
-    public Object userLogin(User user) {
+    public User userLogin(User user) {
         //1.拿到用户名到数据库根据用户名匹配
         User dbUser = userDao.findByName(user.getUserName());
         if (ObjectUtil.isEmpty(dbUser)) {
@@ -54,5 +55,9 @@ public class UserService {
 
         return dbUser;
 
+    }
+
+    public User findById(Integer id) {
+        return userDao.findById(id);
     }
 }

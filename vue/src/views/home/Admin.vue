@@ -37,6 +37,9 @@
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
             <el-button type="text" size="small">编辑</el-button>
+            <el-popconfirm title="确定删除吗？" @confirm="del(scope.row.id)" style="margin-left: 10px">
+              <el-button size="small" type="text" slot="reference">删除</el-button>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
@@ -137,6 +140,17 @@ export default {
           }
         })
       }
+    },
+    // 根据ID删除某条数据
+    del(id) {
+      request.delete("/admin/" + id).then(res => {
+        if (res.code === '0') {
+          this.$notify.success('删除成功');
+          this.load();
+        } else {
+          this.$notify.error(res.msg);
+        }
+      });
     },
 
   },

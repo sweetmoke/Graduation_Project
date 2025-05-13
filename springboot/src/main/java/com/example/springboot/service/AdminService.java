@@ -61,4 +61,9 @@ public class AdminService {
         adminDao.insertSelective(admin);
         return admin;
     }
+
+    public void delete(Integer id) {
+        adminDao.deleteByPrimaryKey(id);
+    }
+
 }

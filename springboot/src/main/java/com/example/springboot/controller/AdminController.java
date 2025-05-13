@@ -44,7 +44,15 @@ public class AdminController {
 
         return Result.success(adminService.adminRegister(admin));
 
+    }
 
+    /**
+     * 描述：根据ID删除
+     */
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable Integer id) {
+        adminService.delete(id);
+        return Result.success();
     }
 
 }

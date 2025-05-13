@@ -3,4 +3,14 @@
 <mapper namespace="com.example.springboot.dao.AdminDao">
 
 
+    <select id="findBySearch" resultType="com.example.springboot.entity.Admin">
+        select `admin`.* from `admin`
+
+        where 1 = 1
+        <if test="search != null and search.userName != null and search.userName != ''">
+            and `admin`.`userName` like concat ('%', #{search.userName}, '%')
+        </if>
+
+    </select>
+
 </mapper>

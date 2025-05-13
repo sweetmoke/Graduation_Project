@@ -5,12 +5,14 @@
 
       <div style="margin-bottom: 20px; display: flex">
         <div style="flex: 10;text-align: left">
-          <el-input placeholder="请输入查询内容" size="small" v-model="input" style="width: 40%; margin-right: 20px">
+          <el-input placeholder="请输入用户名查询" size="small" v-model="search.userName" style="width: 40%; margin-right: 20px">
             <template #suffix>
               <i class="el-input__icon el-icon-search"></i>
             </template>
           </el-input>
+          <el-button type="success" size="small" style="border-radius: 1px;width: 100px;text-align: center" @click="load">查询</el-button><!--  没有点击事件？ -->
         </div>
+
         <div style="flex: 2; text-align: right">
           <el-button type="success" size="small" style="border-radius: 1px; width: 100px; text-align: center" @click="add">
             新增
@@ -19,7 +21,7 @@
       </div>
 
       <!-- 管理员界面 -->
-      <el-table :data="tableData" style="width: 100%" fit="true" stripe :cell-style="{ textAlign: 'center' }"
+      <el-table :data="tableData" style="width: 100%" :fit="true" stripe :cell-style="{ textAlign: 'center' }"
         :header-cell-style="{ textAlign: 'center' }">
         <el-table-column fixed prop="id" label="ID">
         </el-table-column>
@@ -36,7 +38,7 @@
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            <el-button type="text" size="small" @click="edit(scope.row)">编辑</el-button>
             <el-popconfirm title="确定删除吗？" @confirm="del(scope.row.id)" style="margin-left: 10px">
               <el-button size="small" type="text" slot="reference">删除</el-button>
             </el-popconfirm>
@@ -44,23 +46,38 @@
         </el-table-column>
       </el-table>
 
+      <!--  分页样式  -->
       <div class="block" style="text-align:center;margin-top:40px">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="currentPage" :page-sizes="[25, 50, 100, 200]" :page-size="1"
-          layout="total, sizes, prev, pager, next, jumper" :total="400">
+<!--        <el-pagination-->
+<!--            @size-change="handleSizeChange"-->
+<!--            @current-change="handleCurrentChange"-->
+<!--            :current-page="currentPage"-->
+<!--            :page-sizes="[25, 50, 100, 200]"-->
+<!--            :page-size="1"-->
+<!--            layout="total, sizes, prev, pager, next, jumper"-->
+<!--            :total="400">-->
+<!--        </el-pagination>-->
+        <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-size="10"
+            layout="total, prev, pager, next, jumper"
+            :total="total">
         </el-pagination>
+
       </div>
 
     <!--  模态框  -->
     <el-dialog title="请填写信息" :visible.sync="dialogVisible" width="40%">
       <el-form :model="form" label-position="right" label-width="100px" style="padding-right: 40px">
         <!-- 身份选择 -->
-        <el-form-item label="身份" prop="role">
-          <el-select size="small" v-model="form.role" placeholder="请选择身份">
-            <el-option label="管理员" value="1" />
-            <el-option label="用户" value="2" />
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="身份" prop="role">-->
+<!--          <el-select size="small" v-model="form.role" placeholder="请选择身份">-->
+<!--            <el-option label="管理员" value="1" />-->
+<!--            <el-option label="用户" value="2" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="用户名">
           <el-input size="small" v-model="form.userName" placeholder="请输入用户名"></el-input>
         </el-form-item>
@@ -106,17 +123,16 @@ export default {
     handleClick(row) {
       console.log(row);
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    //  当点击页码时，当前页码数赋值给data变量pageNum
+    handleCurrentChange(pageNum) {
+      this.pageNum = pageNum;
+      this.load();
     },
     load(){
-      request.get("admin/alldata").then(res =>{
-        if (res.code === '0'){
-          //从后端调取管理员alldata
-          this.tableData = res.data;
+      request.post("/admin/page?pageNum=" + this.pageNum, this.search).then(res => {
+        if (res.code === '0') {
+          this.tableData = res.data.list;
+          this.total = res.data.total;
         }else{
           //不成功返回错误信息
           this.$message.error(res.msg)
@@ -139,7 +155,23 @@ export default {
             this.$message.error(res.msg); // 如果不成功，返回报错信息
           }
         })
+      }else {
+        request.post("/admin/edit",this.form).then(res =>{
+          if (res.code === '0'){
+            this.$message.success("修改成功");
+            this.dialogVisible = false;
+            this.load();
+          } else {
+            this.$message.error(res.msg); // 如果不成功，返回报错信息
+          }
+        })
       }
+
+    },
+    // 点击编辑，打开模态框，回显当前对象的信息
+    edit(row){
+      this.dialogVisible = true;
+      this.form = row;
     },
     // 根据ID删除某条数据
     del(id) {
@@ -153,14 +185,17 @@ export default {
       });
     },
 
+
   },
   data() {
     return {
       form:{},
       dialogVisible:false,
       input: '',
-      currentPage: 1,
-      tableData: []
+      pageNum: 1,
+      total:0,
+      search:{},
+      tableData: [],
     }
   }
 }

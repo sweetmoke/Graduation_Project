@@ -55,4 +55,25 @@ public class AdminController {
         return Result.success();
     }
 
+
+    /**
+     * 编辑管理员信息接口
+     */
+    @PostMapping("/edit")
+    public Result adminEdit(@RequestBody Admin admin){
+
+        return Result.success(adminService.adminEdit(admin));
+
+    }
+
+    /**
+     * 描述：分页查询
+     */
+    @PostMapping("/page")
+    public Result page(@RequestBody Admin search,
+                       @RequestParam(defaultValue = "1") Integer pageNum,
+                       @RequestParam(defaultValue = "10") Integer pageSize) {
+        return Result.success(adminService.findPage(search, pageNum, pageSize));
+    }
+
 }

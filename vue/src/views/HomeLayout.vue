@@ -156,10 +156,12 @@ export default {
     line-height: 200px;
 }
 
-/* .el-main {
-    background-color: #f0f0f0;
-    margin: 8px;
-} */
+.el-main {
+    /*background-color: #f0f0f0;
+    margin: 8px;*/
+    overflow-y: auto;
+    padding: 20px;
+}
 
 body>.el-container {
     margin-bottom: 40px;

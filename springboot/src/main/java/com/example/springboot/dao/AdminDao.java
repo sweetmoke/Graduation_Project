@@ -19,4 +19,6 @@ public interface AdminDao extends Mapper<Admin> {
 
     @Select("select * from admin where `id` = #{id}")
     Admin findById(@Param("id") Integer id);
+
+    List<Admin> findBySearch(@Param("search") Admin search);
 }

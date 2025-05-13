@@ -2,11 +2,14 @@ package com.example.springboot.service;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.example.springboot.common.ResultCode;
+import com.example.springboot.common.config.JwtTokenUtils;
 import com.example.springboot.dao.AdminDao;
 import com.example.springboot.entity.Account;
 import com.example.springboot.entity.Admin;
 import com.example.springboot.entity.User;
 import com.example.springboot.exception.CustomException;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -66,4 +69,36 @@ public class AdminService {
         adminDao.deleteByPrimaryKey(id);
     }
 
+
+
+    public Admin adminEdit(Admin admin) {
+
+        String userName = admin.getUserName();
+//     1.先校验用户名是不是为空： 如果用户名，为空，抛出异常
+        if (ObjectUtil.isEmpty(userName)){
+            throw new CustomException(ResultCode.USERNAME_ISNULL);
+        }
+        adminDao.updateByPrimaryKeySelective(admin);
+
+        return admin;
+    }
+
+    // 分页查询和模糊查询的方法
+    public PageInfo<Admin> findPage(Admin search, Integer pageNum, Integer pageSize) {
+        //判断当前用户有无登录
+        Account user = JwtTokenUtils.getCurrentUser();
+        if (ObjectUtil.isEmpty(user)) {
+            throw new CustomException(ResultCode.USER_NOT_LOGIN);
+        }
+        // 开启分页
+        PageHelper.startPage(pageNum, pageSize);
+        List<Admin> all = findByCondition(search);
+
+        return PageInfo.of(all);
+    }
+
+    // 根据条件查询的方法
+    public List<Admin> findByCondition(Admin search) {
+        return adminDao.findBySearch(search);
+    }
 }

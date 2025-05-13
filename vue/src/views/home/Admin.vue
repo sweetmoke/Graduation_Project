@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div class="admin">
-      <div style="margin-bottom:40px;font-size:18px;font-weight:530;">管理员管理</div>
+
+  <div class="admin">
+    <div style="margin-bottom:40px;font-size:18px;font-weight:530;">管理员管理</div>
 
       <div style="margin-bottom: 20px; display: flex">
         <div style="flex: 10;text-align: left">
@@ -12,7 +12,7 @@
           </el-input>
         </div>
         <div style="flex: 2; text-align: right">
-          <el-button type="success" size="small" style="border-radius: 1px; width: 100px; text-align: center">
+          <el-button type="success" size="small" style="border-radius: 1px; width: 100px; text-align: center" @click="add">
             新增
           </el-button>
         </div>
@@ -48,9 +48,48 @@
         </el-pagination>
       </div>
 
+    <!--  模态框  -->
+    <el-dialog title="请填写信息" :visible.sync="dialogVisible" width="40%">
+      <el-form :model="form" label-position="right" label-width="100px" style="padding-right: 40px">
+        <!-- 身份选择 -->
+        <el-form-item label="身份" prop="role">
+          <el-select size="small" v-model="form.role" placeholder="请选择身份">
+            <el-option label="管理员" value="1" />
+            <el-option label="用户" value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="用户名">
+          <el-input size="small" v-model="form.userName" placeholder="请输入用户名"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input size="small" type="password" show-password v-model="form.password" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-radio-group size="small" v-model="form.gender">
+            <el-radio label="男"></el-radio>
+            <el-radio label="女"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="年龄">
+          <el-input size="small" v-model="form.age" placeholder="请输入手机号"></el-input>
+        </el-form-item>
+        <el-form-item label="电话">
+          <el-input size="small" v-model="form.phone" placeholder="请输入手机号"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" class="cancel-btn" @click="dialogVisible = false">
+          取 消
+        </el-button>
+        <el-button size="small" class="confirm-btn" @click="save">
+          保 存
+        </el-button>
+      </div>
 
-    </div>
+    </el-dialog>
+
   </div>
+
 </template>
 
 <script>
@@ -77,13 +116,34 @@ export default {
           this.tableData = res.data;
         }else{
           //不成功返回错误信息
-          this.$notify.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
-    }
+    },
+    // 点击新增按钮点击事件调用
+    add(){
+      this.form = {};//清空老数据
+      this.dialogVisible = true;
+    },
+    save(){
+      if (!this.form.id){ //如果没有id 走新增接口。有是编辑
+        request.post("/admin",this.form).then(res =>{ //post请求把form对象传到后端，后端写逻辑把form存到数据库里
+          if (res.code === '0'){ //如果接口调用成功，则把模态框关闭，重新加载一下数据库的数据
+            this.$message.success("新增成功");
+            this.dialogVisible = false;
+            this.load();
+          } else {
+            this.$message.error(res.msg); // 如果不成功，返回报错信息
+          }
+        })
+      }
+    },
+
   },
   data() {
     return {
+      form:{},
+      dialogVisible:false,
       input: '',
       currentPage: 1,
       tableData: []
@@ -108,4 +168,31 @@ export default {
   box-shadow: 4px 4px 10px rgba(218, 218, 218, 0.534);
   /* 阴影效果 */
 }
+.cancel-btn {
+  background-color: #f2f2f2;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+  color: #000;
+}
+
+.confirm-btn {
+  background-color: #009688;
+  color: white !important; /* 强制白色字体 */
+  border: 1px solid #009688;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.confirm-btn:hover {
+  background-color: #00796b;
+  border-color: #00796b;
+  color: white !important; /* hover 时也强制白色 */
+}
+
 </style>

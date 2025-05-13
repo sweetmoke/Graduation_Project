@@ -77,7 +77,7 @@ export default {
           this.tableData = res.data;
         }else{
           //不成功返回错误信息
-          this.$notify.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
     }

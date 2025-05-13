@@ -19,13 +19,13 @@ public class AdminController {
 
     @GetMapping("/alldata")
     public Result getData(){
-        List<Admin> all = adminService.getAll();
+        List<Admin> admins = adminService.getAll();
 //        报错，当管理员数据小于1
 //        if(all.size() < 1){
 //            throw new CustomException(ResultCode.DATA_LESS);
 //        }
 
-        return Result.success(adminService.getAll());
+        return Result.success(admins);
 
     }
 
@@ -35,5 +35,16 @@ public class AdminController {
 //
 //        return Result.success(adminService.adminLogin(admin));
 //    }
+
+    /**
+     * 新增管理员接口
+     */
+    @PostMapping
+    public Result adminRegister(@RequestBody Admin admin){
+
+        return Result.success(adminService.adminRegister(admin));
+
+
+    }
 
 }

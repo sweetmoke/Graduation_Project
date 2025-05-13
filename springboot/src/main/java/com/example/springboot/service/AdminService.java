@@ -45,4 +45,20 @@ public class AdminService {
     public Admin findById(Integer id) {
         return adminDao.findById(id);
     }
+
+    public Admin adminRegister(Admin admin) {
+
+        String userName = admin.getUserName();
+//     1.先校验用户名是不是为空： 如果用户名，为空，抛出异常
+        if (ObjectUtil.isEmpty(userName)){
+            throw new CustomException(ResultCode.USERNAME_ISNULL);
+        }
+//     2.校验用户名的唯一性：
+        Admin dbAdmin = adminDao.findByName(userName);
+        if (ObjectUtil.isNotEmpty(dbAdmin)) {
+            throw new CustomException(ResultCode.USER_EXIST_ERROR);//用户名已存在
+        }
+        adminDao.insertSelective(admin);
+        return admin;
+    }
 }

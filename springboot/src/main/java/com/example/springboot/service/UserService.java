@@ -2,10 +2,13 @@ package com.example.springboot.service;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.example.springboot.common.ResultCode;
+import com.example.springboot.common.config.JwtTokenUtils;
 import com.example.springboot.dao.UserDao;
 import com.example.springboot.entity.Account;
 import com.example.springboot.entity.User;
 import com.example.springboot.exception.CustomException;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,10 @@ public class UserService {
 
         if (ObjectUtil.isNotEmpty(dbUser)) {//如果找到这个用户，抛出异常提示用户已存在
             throw new CustomException(ResultCode.USER_EXIST_ERROR);//用户名已存在
+        }
+        //        设置默认密码
+        if (ObjectUtil.isEmpty(user.getPassword())){
+            user.setPassword("123456");
         }
 
         //2.用insertSelective 方法，把用户注册信息写到数据表
@@ -59,5 +66,41 @@ public class UserService {
 
     public User findById(Integer id) {
         return userDao.findById(id);
+    }
+
+
+
+    public void delete(Integer id) {
+        userDao.deleteByPrimaryKey(id);
+    }
+
+
+    public PageInfo<User> findPage(User search, Integer pageNum, Integer pageSize) {
+        Account user = JwtTokenUtils.getCurrentUser();
+        if (ObjectUtil.isEmpty(user)) {
+            throw new CustomException(ResultCode.USER_NOT_LOGIN);
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<User> all = findByCondition(search);
+
+        return PageInfo.of(all);
+    }
+
+    public List<User> findByCondition(User search) {
+        return userDao.findBySearch(search);
+    }
+
+
+
+    public User userEdit(User user) {
+
+        String userName = user.getUserName();
+//     1.先校验用户名是不是为空： 如果用户名，为空，抛出异常
+        if (ObjectUtil.isEmpty(userName)){
+            throw new CustomException(ResultCode.USERNAME_ISNULL);
+        }
+        userDao.updateByPrimaryKeySelective(user);
+
+        return user;
     }
 }

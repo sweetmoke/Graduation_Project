@@ -74,6 +74,34 @@
             <version>1.4.6</version>
         </dependency>
 
+        <!-- HTTP 客户端，用于调用 Dify API -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+
+        <!-- Jackson JSON 解析，处理 Dify API 和 Webhook 的 JSON 数据 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+
+        <!-- Spring Boot 定时任务支持 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>3.3.9</version>
+        </dependency>
+
+        <!-- 输入验证（Hibernate Validator） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <version>3.3.9</version>
+        </dependency>
+
 
     </dependencies>
 

@@ -56,7 +56,8 @@
 
                 <!-- 右侧菜单栏 -->
                 <div style="display: flex;float: right">
-                    <el-submenu index="1">
+                <!-- 当用户角色为1时才能看到 -->
+                    <el-submenu index="1" v-if="user.role === 1" >
                         <template slot="title">账户管理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</template>
 
                         <el-menu-item index="/home/admin" style="transition: all 0.3s;"
@@ -70,7 +71,7 @@
                     <el-menu-item index="/home/information"
                         style="display: flex;align-items: center;justify-content: center;transition: all 0.3s;"
                         class="nav-item">
-                        <i class="el-icon-bell"></i>通知
+                        <i class="el-icon-bell"></i>安全中心
                     </el-menu-item>
 
 

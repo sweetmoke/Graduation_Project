@@ -61,6 +61,11 @@ public class AdminService {
         if (ObjectUtil.isNotEmpty(dbAdmin)) {
             throw new CustomException(ResultCode.USER_EXIST_ERROR);//用户名已存在
         }
+//        设置默认密码
+        if (ObjectUtil.isEmpty(admin.getPassword())){
+            admin.setPassword("123456");
+        }
+
         adminDao.insertSelective(admin);
         return admin;
     }

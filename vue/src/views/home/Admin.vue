@@ -10,7 +10,7 @@
               <i class="el-input__icon el-icon-search"></i>
             </template>
           </el-input>
-          <el-button type="success" size="small" style="border-radius: 1px;width: 100px;text-align: center" @click="load">查询</el-button><!--  没有点击事件？ -->
+          <el-button type="success" size="small" style="border-radius: 1px;width: 100px;text-align: center" @click="load">查询</el-button>
         </div>
 
         <div style="flex: 2; text-align: right">
@@ -37,7 +37,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+<!--            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
             <el-button type="text" size="small" @click="edit(scope.row)">编辑</el-button>
             <el-popconfirm title="确定删除吗？" @confirm="del(scope.row.id)" style="margin-left: 10px">
               <el-button size="small" type="text" slot="reference">删除</el-button>
@@ -71,15 +71,8 @@
     <!--  模态框  -->
     <el-dialog title="请填写信息" :visible.sync="dialogVisible" width="40%">
       <el-form :model="form" label-position="right" label-width="100px" style="padding-right: 40px">
-        <!-- 身份选择 -->
-<!--        <el-form-item label="身份" prop="role">-->
-<!--          <el-select size="small" v-model="form.role" placeholder="请选择身份">-->
-<!--            <el-option label="管理员" value="1" />-->
-<!--            <el-option label="用户" value="2" />-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
         <el-form-item label="用户名">
-          <el-input size="small" v-model="form.userName" placeholder="请输入用户名"></el-input>
+          <el-input size="small" v-model="form.userName"disabled></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input size="small" type="password" show-password v-model="form.password" placeholder="请输入密码"></el-input>
@@ -146,6 +139,7 @@ export default {
     },
     save(){
       if (!this.form.id){ //如果没有id 走新增接口。有是编辑
+        this.form.role = 1;
         request.post("/admin",this.form).then(res =>{ //post请求把form对象传到后端，后端写逻辑把form存到数据库里
           if (res.code === '0'){ //如果接口调用成功，则把模态框关闭，重新加载一下数据库的数据
             this.$message.success("新增成功");
@@ -169,18 +163,25 @@ export default {
 
     },
     // 点击编辑，打开模态框，回显当前对象的信息
-    edit(row){
+    // edit(row){
+    //   this.dialogVisible = true;
+    //   this.form = row;
+    // },
+    edit(row) {
+      this.form = JSON.parse(JSON.stringify(row));
+      this.$nextTick(() => {
+        this.$refs.tx.clearFiles()
+      });
       this.dialogVisible = true;
-      this.form = row;
     },
     // 根据ID删除某条数据
     del(id) {
       request.delete("/admin/" + id).then(res => {
         if (res.code === '0') {
-          this.$notify.success('删除成功');
+          this.$message.success('删除成功');
           this.load();
         } else {
-          this.$notify.error(res.msg);
+          this.$message.error(res.msg);
         }
       });
     },
@@ -191,7 +192,7 @@ export default {
     return {
       form:{},
       dialogVisible:false,
-      input: '',
+      // input: '',
       pageNum: 1,
       total:0,
       search:{},
@@ -209,7 +210,6 @@ export default {
 } */
 .admin {
   width: 100%;
-  height: 940px;
   padding: 40px;
   border: 1px solid #cdcdcd;
   /* background-color: white; 这里是内部容器，保持白色 */

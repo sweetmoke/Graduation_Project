@@ -56,12 +56,11 @@ public class JwtInterceptor implements HandlerInterceptor {
             // 根据角色从对应的表中查询用户,根据token中的userid查询数据库
             if ("1".equals(role)) {
                 user = adminService.findById(Integer.valueOf(userId));
-            }
-            if ("2".equals(role)) {
+            }else if ("2".equals(role)) {
                 user = userService.findById(Integer.valueOf(userId));
             }
 
-            // 5. 验证 token（使用用户密码作为密钥）
+            // 3. 验证 token（使用用户密码作为密钥）
 //            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
 //            jwtVerifier.verify(token);
 
@@ -79,7 +78,6 @@ public class JwtInterceptor implements HandlerInterceptor {
         } catch (JWTVerificationException e) {
             throw new CustomException(ResultCode.TOKEN_CHECK_ERROR); // 抛出自定义异常
         }
-
 
         return true; // 验证成功，放行
     }

@@ -24,3 +24,9 @@ mybatis:
   type-aliases-package: com.example.springboot.entity
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 配置dify的API key
+dify:
+  api:
+    key: app-AiIZ8AeZ3FoApBJxwqSzulvr  # 替换为你的 Dify API Key
+    url: http://localhost/v1     # Dify API 基础 URL

@@ -8,7 +8,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "userName")
+    @Column(name = ",")
     private String userName;
 
     @Column(name = "password")

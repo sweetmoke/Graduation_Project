@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springboot.dao.ScenarioDao">
+
+    <resultMap id="ScenarioResultMap" type="com.example.springboot.entity.Scenario">
+        <id property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="context" column="context" />
+        <result property="question" column="question" />
+        <result property="correctKeywords" column="correct_keywords" />
+    </resultMap>
+
+    <select id="findAll" resultMap="ScenarioResultMap">
+        SELECT id, title, context, question, correct_keywords
+        FROM safety_scenarios
+    </select>
+
+</mapper>

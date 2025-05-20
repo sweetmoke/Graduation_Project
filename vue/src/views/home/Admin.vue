@@ -72,7 +72,7 @@
     <el-dialog title="请填写信息" :visible.sync="dialogVisible" width="40%">
       <el-form :model="form" label-position="right" label-width="100px" style="padding-right: 40px">
         <el-form-item label="用户名">
-          <el-input size="small" v-model="form.userName"disabled></el-input>
+          <el-input size="small" v-model="form.userName" disabled></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input size="small" type="password" show-password v-model="form.password" placeholder="请输入密码"></el-input>

@@ -1,100 +1,150 @@
 <template>
-  <div class="test">
-    <el-card>
-      <el-form label-position="top">
-        <el-form-item label="选择一个安全情境：">
-          <el-select v-model="selectedScenario" placeholder="请选择一个情境">
+  <div class="admin">
+    <h1>安全情境模拟</h1>
+
+    <div v-if="loading" class="loading">加载中...</div>
+    <div v-else-if="error" class="error">错误：{{ error }}</div>
+    <div v-else>
+      <!-- 下拉选择情境标题 -->
+      <el-form label-width="200px">
+        <el-form-item label="请选择一个情境：">
+          <el-select v-model="selectedIndex" placeholder="请选择情境标题" style="width: 200px">
             <el-option
                 v-for="(scenario, index) in scenarios"
-                :key="index"
+                :key="scenario.id"
                 :label="scenario.title"
-                :value="index">
-            </el-option>
+                :value="index"
+            />
           </el-select>
         </el-form-item>
-
-        <div v-if="currentScenario">
-          <el-alert :title="currentScenario.context" type="info" show-icon></el-alert>
-          <p class="question"><strong>引导问题：</strong>{{ currentScenario.question }}</p>
-
-          <el-form-item label="你的应对方法：">
-            <el-input
-                type="textarea"
-                :rows="4"
-                v-model="userAnswer"
-                placeholder="请输入你的答案" />
-          </el-form-item>
-
-          <el-button type="primary" @click="evaluateAnswer">提交答案</el-button>
-
-          <div v-if="feedback" class="feedback">
-            <el-alert
-                :title="feedback"
-                :type="feedbackType"
-                show-icon
-                :closable="false"
-                style="margin-top: 20px;" />
-          </div>
-        </div>
       </el-form>
-    </el-card>
+
+      <!-- 展示选择的情境 -->
+      <div v-if="selectedIndex !== ''">
+        <el-card class="scenario-card" shadow="always">
+          <h2>{{ scenarios[selectedIndex].title }}</h2>
+          <p><strong>情境描述：</strong>{{ scenarios[selectedIndex].context }}</p>
+          <p><strong>问题：</strong>{{ scenarios[selectedIndex].question }}</p>
+
+          <el-input
+              type="textarea"
+              v-model="scenarios[selectedIndex].userAnswer"
+              placeholder="请详细描述你的应对方法"
+              :rows="5"
+              resize="vertical"
+          />
+
+          <div class="btn-group">
+            <el-button type="primary" @click="submitAnswer(selectedIndex)">提交回答</el-button>
+          </div>
+
+          <!-- 判断关键词匹配结果 -->
+          <div
+              v-if="scenarios[selectedIndex].result !== null"
+              class="result"
+              :class="{
+              correct: scenarios[selectedIndex].result,
+              incorrect: !scenarios[selectedIndex].result
+            }"
+          >
+            <span v-if="scenarios[selectedIndex].result">回答正确 ✔️</span>
+            <span v-else>回答缺少关键词 ❌</span>
+            <p><strong>正确关键词：</strong>{{ scenarios[selectedIndex].correctKeywords.join('，') }}</p>
+          </div>
+
+          <!-- AI 点评反馈 -->
+          <div
+              v-if="scenarios[selectedIndex].feedback"
+              class="result"
+              style="white-space: pre-line; margin-top: 10px; background: #eaf4ff; padding: 10px; border-radius: 5px; border: 1px solid #90caf9;"
+          >
+            <strong>AI点评：</strong>
+            <p>{{ scenarios[selectedIndex].feedback }}</p>
+          </div>
+        </el-card>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { ElMessage } from 'element-ui';
+
 export default {
   name: 'Test',
   data() {
     return {
-      selectedScenario: null,
-      userAnswer: '',
-      feedback: '',
-      feedbackType: 'success',
-      scenarios: [
-        {
-          title: '校园突发火灾演练',
-          context: '放学后你还在教室收拾书包，突然外面有人大喊“起火了！快跑！”你看到走廊外有烟雾飘进来。',
-          question: '你会怎么做？请详细描述你的逃生方法。',
-          correctKeywords: ['湿毛巾', '捂住口鼻', '弯腰', '逃生通道', '不乘电梯'],
-        },
-        {
-          title: '地震发生在学校时',
-          context: '你正在上课，地面突然震动，吊灯开始晃动，老师大喊“地震了！”',
-          question: '你该怎么应对这场地震？',
-          correctKeywords: ['躲在桌子下', '保护头部', '不乱跑', '震后有序撤离'],
-        },
-        {
-          title: '朋友在河边落水',
-          context: '你和朋友在小河边玩，一个同学不小心掉进水里，正在挣扎。',
-          question: '你会怎么救他？',
-          correctKeywords: ['不跳水', '呼救', '找树枝', '绳子', '大人帮忙'],
-        },
-      ]
+      scenarios: [],
+      loading: true,
+      error: null,
+      selectedIndex: '',
     };
   },
-  computed: {
-    currentScenario() {
-      return this.scenarios[this.selectedScenario] || null;
+  async created() {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:9090/scenario/all', {
+        headers: { token }
+      });
+      if (!res.ok) throw new Error('接口请求失败');
+      const data = await res.json();
+      console.log('后端返回数据:', data); // 👈 加上这行
+
+      this.scenarios = data.map(s => ({
+        ...s,
+        userAnswer: '',
+        result: null,
+        feedback: ''
+      }));
+    } catch (err) {
+      this.error = err.message;
+    } finally {
+      this.loading = false;
     }
   },
   methods: {
-    evaluateAnswer() {
-      if (!this.userAnswer.trim()) {
-        this.feedback = '请先填写你的应对方法。';
-        this.feedbackType = 'warning';
+    async submitAnswer(index) {
+      const scenario = this.scenarios[index];
+      const answer = scenario.userAnswer.trim();
+      if (!answer) {
+        ElMessage.warning('请先输入回答内容');
         return;
       }
 
-      const keywords = this.currentScenario.correctKeywords;
-      const answer = this.userAnswer.toLowerCase();
-      const matched = keywords.filter(k => answer.includes(k.toLowerCase()));
+      // 关键词判断
+      const containsAll = scenario.correctKeywords.every(keyword =>
+          answer.includes(keyword)
+      );
+      scenario.result = containsAll;
 
-      if (matched.length >= Math.ceil(keywords.length / 2)) {
-        this.feedback = '你的答案很棒，已经包含了多数关键点，继续保持！';
-        this.feedbackType = 'success';
-      } else {
-        this.feedback = '你的答案有待改进，注意关键点如：' + keywords.join('、');
-        this.feedbackType = 'error';
+      // 构造提示词进行 AI 点评
+      const prompt = `你是一位专注于中小学生安全教育的“安全小导师”，具备丰富的校园安全、交通安全、防拐骗、防溺水、防校园欺凌、消防知识、网络安全和急救常识等相关知识，能够用简单易懂、适合学生理解的方式进行科普讲解。
+现在你给学生出了一个"${scenario.title}"类型题目，情境是"${scenario.context}"，题目是"${scenario.question}"，学生答题的关键点是"${scenario.correctKeywords.join('，')}"。
+学生的回答是："${answer}"。
+请你点评该回答是否正确，是否完整，有没有改进建议，用鼓励和引导的语气反馈给学生。`;
+
+      try {
+        const res = await fetch('http://localhost/api/chat-messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            response_mode: 'streaming',
+            conversation_id: 'b7746b1b-fb7a-44cf-9d2b-5ad12671de6a',
+            files: [],
+            query: prompt,
+            inputs: {},
+            parent_message_id: '606bfd94-f714-4cc5-8149-e86b66c8b11a'
+          })
+        });
+
+        if (!res.ok) throw new Error('请求失败');
+
+        const resultText = await res.text(); // 假设服务端返回纯文本
+        scenario.feedback = resultText;
+      } catch (err) {
+        scenario.feedback = 'AI 点评请求失败，请稍后再试。';
       }
     }
   }
@@ -102,12 +152,63 @@ export default {
 </script>
 
 <style scoped>
-.test {
-  max-width: 700px;
-  margin: 40px auto;
+.admin {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px;
+  border: 1px solid #cdcdcd;
+  border-radius: 10px;
+  box-shadow: 4px 4px 10px rgba(218, 218, 218, 0.534);
+  background-color: #fff;
 }
-.question {
-  margin: 15px 0;
-  font-size: 16px;
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.scenario-card {
+  margin-top: 20px;
+  background: #f9f9f9;
+}
+
+.scenario-card h2 {
+  margin-top: 0;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.btn-group {
+  margin-top: 15px;
+}
+
+.result {
+  margin-top: 20px;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.correct {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
+
+.incorrect {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+}
+.error {
+  color: red;
 }
 </style>
